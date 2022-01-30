@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="Alexandros Porfiris" id="qualco_2">
+        <sql>
+            CREATE OR REPLACE VIEW continents_countries AS SELECT c.name AS country_name, r.name AS region_name, con.name AS continent_name, cs.year, cs.population, cs.gdp FROM countries c
+            INNER JOIN regions r ON c.region_id = r.region_id
+            INNER JOIN continents con ON r.continent_id = con.continent_id
+            INNER JOIN country_stats cs ON cs.country_id = c.country_id;
+
+            CREATE OR REPLACE VIEW gdp AS
+            WITH cs AS
+            (SELECT c.name, c.country_code3,s.year, s.population, s.gdp, s.gdp/s.population AS ratio,
+            ROW_NUMBER() OVER (PARTITION BY s.country_id ORDER BY s.gdp/s.population DESC) as rn
+            from country_stats s INNER JOIN countries c ON s.country_id = c.country_id)
+            SELECT name , country_code3, year , population , gdp, ratio
+            FROM cs AS t WHERE t.rn = 1;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

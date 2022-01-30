@@ -1,0 +1,24 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.bg {
+  /* The image used */
+  background-image: url("./assets/images/qualco.png");
+
+  /* Full height */
+  height: calc(100% - 38.72px);
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+.table-search{
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 1.65rem;
+}

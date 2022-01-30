@@ -1,0 +1,67 @@
+<!-- Data Table Start-->
+<p-table #dt [columns]="cols" [paginator]="true" [rows]="pageSize" [rowsPerPageOptions]="[10,20,30]" [value]="tableData" [totalRecords]="total" [lazy]="true"
+  paginatorPosition="bottom" [alwaysShowPaginator]="false" [resizableColumns]="true" [responsive]="true"
+  [first]="position" [loading]="loading" (onSort)="tableService.onSorting(dt._multiSortMeta)"
+  (onColResize)="tableService.onColumnResize($event,cols,'continents-countries-table')"
+  (onPage)="tableService.onPagenation($event)" sortMode="multiple">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <ng-template ngFor let-col [ngForOf]="columns">
+        <th id={{col.field}} *ngIf="col.sortable" pResizableColumn [pSortableColumn]="col.field"
+          [ngStyle]="{'width': tableService.getColWidth(col.header,columnSizes)}">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+        <th *ngIf="!col.sortable" pResizableColumn
+          [ngStyle]="{'width': tableService.getColWidth(col.header,columnSizes)}">
+          {{col.header}}
+        </th>
+      </ng-template>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns">
+        <div class="ui-g-12 ui-md-4" *ngIf="col.searchable">
+          <span [ngSwitch]="col.type">
+            <p-calendar *ngSwitchCase="'date'" appendTo="body" [(ngModel)]="rangeDates" view="month" yearRange="1800:2022"
+              [yearNavigator]="true" selectionMode="range" dateFormat="y"
+              (onClose)="tableService.onFilter(this.rangeDates , col)" [readonlyInput]="true" class="table-search"></p-calendar>
+              <p-dropdown *ngSwitchCase="'dd'" appendTo="body" [options]="regions" [(ngModel)]="selectedRegion" (onChange)="tableService.onFilter(this.selectedRegion , col)" class="table-search"></p-dropdown>
+          </span>
+
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+    <tr>
+      <ng-template ngFor let-col [ngForOf]="columns">
+        <td [ngSwitch]="col.type" class="ui-resizable-column">
+
+          <span *ngSwitchCase="'index'">{{i + 1}}</span>
+
+          <span *ngSwitchDefault>{{rowData[col.field] && col.childfield ?
+            rowData[col.field][col.childfield] :
+            rowData[col.field]}}</span>
+
+        </td>
+      </ng-template>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length" class="text-center">
+        No results found for these search terms.
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<!-- Data Table End-->
+
+<div *ngIf="!loading">
+  <h5 class="mx-2 mt-2">Hints:</h5>
+  <ol>
+    <li>The columns are resizable and sortable.</li>
+    <li>The app keeps the state of the columns sizes.</li>
+    <li>You can copy paste the link and get the same table view.</li>
+  </ol>
+</div>

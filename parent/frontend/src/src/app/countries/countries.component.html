@@ -1,0 +1,64 @@
+<!-- Data Table Start-->
+<p-table #dt [columns]="cols" selectionMode="single" [paginator]="true" [rows]="pageSize" [rowsPerPageOptions]="[10,20,30]" [value]="tableData"
+  [totalRecords]="total" [lazy]="true" paginatorPosition="bottom" [alwaysShowPaginator]="false"
+  [resizableColumns]="true" [responsive]="true" [first]="position" [loading]="loading"
+  (onSort)="tableService.onSorting(dt._multiSortMeta)"
+  (onColResize)="tableService.onColumnResize($event,cols,'countries-table')"
+  (onPage)="tableService.onPagenation($event)" (onRowSelect)="onRowSelect($event)" sortMode="multiple">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <ng-template ngFor let-col [ngForOf]="columns">
+        <th id={{col.field}} *ngIf="col.sortable" pResizableColumn [pSortableColumn]="col.field"
+          [ngStyle]="{'width': tableService.getColWidth(col.header,columnSizes)}">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+        <th *ngIf="!col.sortable" pResizableColumn
+          [ngStyle]="{'width': tableService.getColWidth(col.header,columnSizes)}">
+          {{col.header}}
+        </th>
+      </ng-template>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+    <tr [pSelectableRow]="rowData">
+      <ng-template ngFor let-col [ngForOf]="columns">
+        <td [ngSwitch]="col.type" class="ui-resizable-column">
+
+          <span *ngSwitchCase="'index'">{{i + 1}}</span>
+
+          <span *ngSwitchCase="'date'">{{(rowData[col.field] && col.childfield ?
+            rowData[col.field][col.childfield] :
+            rowData[col.field])| date: 'd MMM, y'}}</span>
+
+          <span *ngSwitchDefault>{{rowData[col.field] && col.childfield ?
+            rowData[col.field][col.childfield] :
+            rowData[col.field]}}</span>
+
+        </td>
+      </ng-template>
+    </tr>
+  </ng-template>
+</p-table>
+<p-dialog header="{{this.selectedCountryName}} Languages" [(visible)]="displayDialog" [focusOnShow]="false"
+  [responsive]="true" showEffect="fade" [modal]="true" [style]="{width: '300px'}">
+  <ng-template ngFor let-lang [ngForOf]="languages">
+    <div class="p-grid ui-fluid">
+      <div class="p-col-8">
+        <span>{{lang.language}}</span>
+      </div>
+    </div>
+  </ng-template>
+
+</p-dialog>
+<!-- Data Table End-->
+
+<div *ngIf="!loading">
+  <h5 class="mx-2 mt-2">Hints:</h5>
+  <ol>
+    <li>Click on any row to see the country's languages.</li>
+    <li>The columns are resizable and sortable.</li>
+    <li>The app keeps the state of the columns sizes.</li>
+    <li>You can copy paste the link and get the same table view.</li>
+  </ol>
+</div>
