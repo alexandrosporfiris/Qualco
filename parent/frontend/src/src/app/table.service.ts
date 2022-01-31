@@ -84,7 +84,6 @@ export class TableService {
   }
 
   onFilter(value, col) {
-    clearTimeout(this.timeout);
     if (!value) {
       delete this.params.filters[col.field];
     } else if (col.type == 'date') {
@@ -105,14 +104,11 @@ export class TableService {
         },
       };
     }
-    //Make a new timeout set to go off in 1000ms (1 second)
-    this.timeout = setTimeout(() => {
-      this.tableRedirect();
-    }, 1000);
+    this.tableRedirect();
   }
 
   onPagenation(event) {
-    console.log(event)
+    console.log(event);
     this.params = { ...this.params, pageNum: event.first / event.rows };
     this.params = { ...this.params, pageSize: event.rows };
     this.tableRedirect();
@@ -120,16 +116,13 @@ export class TableService {
 
   onSorting(value) {
     if (!this.firstLoad) {
-      clearTimeout(this.timeout);
       if (!value[0]) {
         delete this.params.sort;
       } else {
         this.params = { ...this.params, sort: value[0] };
       }
       //Make a new timeout set to go off in 500ms (0.5 second)
-      this.timeout = setTimeout(() => {
-        this.tableRedirect();
-      }, 500);
+      this.tableRedirect();
     }
   }
 

@@ -76,9 +76,15 @@ export class ContinentsCountriesComponent implements OnInit, AfterViewInit {
   loadTableData(params) {
     this.loading = true;
     this.tableService.getDistinctRegions().subscribe((regionData) => {
-      regionData.forEach((region) =>
-        this.regions.push({ value: region, label: region })
-      );
+      regionData.forEach((region) => {
+        this.regions.push({ value: region, label: region });
+        if (
+          this.tableService.params.filters &&
+          this.tableService.params?.filters['regionName']
+        ) {
+          this.selectedRegion = this.tableService.params?.filters['regionName'];
+        }
+      });
       this.tableService
         .getSearchResulrts(environment.getContinentsCountriesView, params)
         .subscribe((data) => {
@@ -110,12 +116,6 @@ export class ContinentsCountriesComponent implements OnInit, AfterViewInit {
           new Date(this.tableService.params?.filters['startYear'], 0),
           new Date(this.tableService.params?.filters['endYear'], 0),
         ];
-      }
-      if (
-        this.tableService.params.filters &&
-        this.tableService.params?.filters['regionName']
-      ) {
-        this.selectedRegion = this.tableService.params?.filters['regionName'];
       }
     });
     //Needed for expression changed after it has been checked error
