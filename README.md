@@ -9,4 +9,4 @@ Installation instructions:
 6. The application should run at localhost:8080
 
 
-# Warning: On application startup a migration script will run to create the given database and add two new views needed for the implementation.
+# Warning: On application startup a migration script will run to create the given database and add 2 new Table Views needed for the implementation.
